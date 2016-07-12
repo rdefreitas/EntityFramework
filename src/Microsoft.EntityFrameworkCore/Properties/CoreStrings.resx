@@ -144,6 +144,18 @@
   <data name="PropertyNotFound" xml:space="preserve">
     <value>The property '{property}' on entity type '{entityType}' could not be found. Ensure that the property exists and has been included in the model.</value>
   </data>
+  <data name="PropertyIsNavigation" xml:space="preserve">
+    <value>The property '{property}' on entity type '{entityType}' is being accessed using the 'Property' method, but is defined in the model as a navigation property. Use either the 'Reference' or 'Collection' method to access navigation properties.</value>
+  </data>
+  <data name="NavigationIsProperty" xml:space="preserve">
+    <value>The property '{property}' on entity type '{entityType}' is being accessed using the 'Reference' or 'Collection' method, but is defined in the model as a non-navigation property. Use the 'Property' method to access non-navigation properties.</value>
+  </data>
+  <data name="ReferenceIsCollection" xml:space="preserve">
+    <value>The property '{property}' on entity type '{entityType}' is being accessed using the 'Reference' method, but is defined in the model as a collection navigation property. Use the 'Collection' method to access collection navigation properties.</value>
+  </data>
+  <data name="CollectionIsReference" xml:space="preserve">
+    <value>The property '{property}' on entity type '{entityType}' is being accessed using the 'Collection' method, but is defined in the model as a non-collection, reference navigation property. Use the 'Reference' method to access reference navigation properties.</value>
+  </data>
   <data name="CollectionArgumentIsEmpty" xml:space="preserve">
     <value>The collection argument '{argumentName}' must contain at least one element.</value>
   </data>
