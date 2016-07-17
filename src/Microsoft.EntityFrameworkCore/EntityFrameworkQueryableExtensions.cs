@@ -2480,11 +2480,16 @@ namespace Microsoft.EntityFrameworkCore
 
             var asyncEnumerable = source.AsAsyncEnumerable();
 
-            using (var enumerator = asyncEnumerable.GetEnumerator())
+            if (asyncEnumerable != null)
             {
-                while (await enumerator.MoveNext(cancellationToken))
+                using (var enumerator = asyncEnumerable.GetEnumerator())
                 {
+                    while (await enumerator.MoveNext(cancellationToken)) { }
                 }
+            }
+            else
+            {
+                Load(source);
             }
         }
 
