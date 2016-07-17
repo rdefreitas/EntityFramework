@@ -531,6 +531,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <!--<ItemGroup>
+    <ProjectReference Include="..\Microsoft.EntityFrameworkCore.Abstractions\Microsoft.EntityFrameworkCore.Abstractions.csproj">
+      <Project>{9a622063-bfb2-446c-9c8a-dc07daf750e4}</Project>
+      <Name>Microsoft.EntityFrameworkCore.Abstractions</Name>
+    </ProjectReference>
+  </ItemGroup>-->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
