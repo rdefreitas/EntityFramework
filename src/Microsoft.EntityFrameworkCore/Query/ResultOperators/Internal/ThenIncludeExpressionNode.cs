@@ -24,8 +24,8 @@ namespace Microsoft.EntityFrameworkCore.Query.ResultOperators.Internal
         /// </summary>
         public static readonly IReadOnlyCollection<MethodInfo> SupportedMethods = new[]
         {
-            EntityFrameworkQueryableExtensions.ThenIncludeAfterCollectionMethodInfo,
-            EntityFrameworkQueryableExtensions.ThenIncludeAfterReferenceMethodInfo
+			AsyncQueryableExtensions.ThenIncludeAfterCollectionMethodInfo,
+			AsyncQueryableExtensions.ThenIncludeAfterReferenceMethodInfo
         };
 
         private readonly LambdaExpression _navigationPropertyPathLambda;
