@@ -126,7 +126,7 @@ namespace System.Linq
         }
 
         #endregion
-        
+
         #region Count/LongCount
 
         private static readonly MethodInfo _count = GetMethod(nameof(Queryable.Count));
@@ -263,7 +263,7 @@ namespace System.Linq
         }
 
         #endregion
-        
+
         #region First/FirstOrDefault
 
         private static readonly MethodInfo _first = GetMethod(nameof(Queryable.First));
@@ -402,7 +402,7 @@ namespace System.Linq
         }
 
         #endregion
-        
+
         #region Last/LastOrDefault
 
         private static readonly MethodInfo _last = GetMethod(nameof(Queryable.Last));
@@ -2059,7 +2059,7 @@ namespace System.Linq
         }
 
         #endregion
-        
+
         #region Contains
 
         private static readonly MethodInfo _contains = GetMethod(nameof(Queryable.Contains), 1);
@@ -2175,7 +2175,7 @@ namespace System.Linq
         }
 
         #endregion
-        
+
         #region Include
 
         internal static readonly MethodInfo IncludeMethodInfo
@@ -2189,7 +2189,7 @@ namespace System.Linq
         ///     properties of the type being included, then chain a call to
         ///     <see
         ///         cref="ThenInclude{TEntity, TPreviousProperty, TProperty}(IIncludableQueryable{TEntity, IEnumerable{TPreviousProperty}}, Expression{Func{TPreviousProperty, TProperty}})" />
-        ///     after this call.
+        ///     after this call
         /// </summary>
         /// <example>
         ///     <para>

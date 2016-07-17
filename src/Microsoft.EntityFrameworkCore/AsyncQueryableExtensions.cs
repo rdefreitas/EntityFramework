@@ -2,10 +2,8 @@
 // // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // 
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
@@ -19,7 +17,8 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Utilities;
 
-namespace Microsoft.EntityFrameworkCore
+// ReSharper disable once CheckNamespace
+namespace System.Linq
 {
     /// <summary>
     ///     Entity Framework LINQ related extension methods.
