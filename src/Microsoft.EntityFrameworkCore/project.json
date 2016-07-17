@@ -14,21 +14,19 @@
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk",
     "xmlDoc": true,
-    "compile": {
-      "include": "../Shared/*.cs"
-    },
     "embed": {
       "includeFiles": "Properties/Microsoft.EntityFrameworkCore.rd.xml"
     }
   },
-  "dependencies": {
-    "Microsoft.Extensions.Caching.Memory": "1.1.0-*",
-    "Microsoft.Extensions.DependencyInjection": "1.1.0-*",
-    "Microsoft.Extensions.Logging": "1.1.0-*",
-    "Remotion.Linq": "2.1.1",
-    "System.Collections.Immutable": "1.2.0-*",
-    "System.Interactive.Async": "3.0.0-*"
-  },
+    "dependencies": {
+        "Microsoft.Extensions.Caching.Memory": "1.1.0-*",
+        "Microsoft.Extensions.DependencyInjection": "1.1.0-*",
+        "Microsoft.Extensions.Logging": "1.1.0-*",
+        "Remotion.Linq": "2.1.1",
+        "System.Collections.Immutable": "1.2.0-*",
+        "System.Interactive.Async": "3.0.0-*",
+        "Microsoft.EntityFrameworkCore.Abstractions": "1.1.0-*"
+    },
   "frameworks": {
     "net451": {
       "frameworkAssemblies": {
