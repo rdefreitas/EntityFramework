@@ -2075,10 +2075,9 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(source, nameof(source));
 
-            var asyncEnumerable = source.AsAsyncEnumerable();
-
-            if (asyncEnumerable != null)
+            if (source.IsAsyncEnumerable())
             {
+                var asyncEnumerable = source.AsAsyncEnumerable();
                 using (var enumerator = asyncEnumerable.GetEnumerator())
                 {
                     while (await enumerator.MoveNext(cancellationToken)) { }
