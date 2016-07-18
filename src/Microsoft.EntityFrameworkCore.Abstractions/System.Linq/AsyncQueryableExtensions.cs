@@ -2241,12 +2241,20 @@ namespace System.Linq
                            : source);
         }
 
-        internal static readonly MethodInfo ThenIncludeAfterCollectionMethodInfo
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used 
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public static readonly MethodInfo ThenIncludeAfterCollectionMethodInfo
             = typeof(AsyncQueryableExtensions)
                 .GetTypeInfo().GetDeclaredMethods(nameof(AsyncQueryableExtensions.ThenInclude))
                 .Single(mi => !mi.GetParameters()[0].ParameterType.GenericTypeArguments[1].IsGenericParameter);
 
-        internal static readonly MethodInfo ThenIncludeAfterReferenceMethodInfo
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used 
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public static readonly MethodInfo ThenIncludeAfterReferenceMethodInfo
             = typeof(AsyncQueryableExtensions)
                 .GetTypeInfo().GetDeclaredMethods(nameof(AsyncQueryableExtensions.ThenInclude))
                 .Single(mi => mi.GetParameters()[0].ParameterType.GenericTypeArguments[1].IsGenericParameter);

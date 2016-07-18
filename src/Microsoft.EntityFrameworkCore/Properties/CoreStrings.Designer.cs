@@ -9,11 +9,18 @@ namespace Microsoft.EntityFrameworkCore.Internal
 
 	/// <summary>
 	///		This API supports the Entity Framework Core infrastructure and is not intended to be used 
-    ///     directly from your code. This API may change or be removed in future releases.
+	///     directly from your code. This API may change or be removed in future releases.
 	/// </summary>
-    public static class CoreStrings
+#if PUBLICRESOURCES
+	public static class CoreStrings
     {
-        private static readonly ResourceManager _resourceManager
+#else
+	internal static class CoreStrings
+	{
+#endif
+
+
+			private static readonly ResourceManager _resourceManager
             = new ResourceManager("Microsoft.EntityFrameworkCore.Properties.CoreStrings", typeof(CoreStrings).GetTypeInfo().Assembly);
 
         /// <summary>

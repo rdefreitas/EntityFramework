@@ -1,57 +1,59 @@
 ﻿{
-    "version": "1.1.0-alpha1-*",
-    "description":
-        "Abstractions for using Entity Framework Core IQueryable Extensions without the Entity Framework Core library.r\n\r\nCommon Namespaces:\r\nSystem.Linq\r\nMicrosoft.EntityFrameworkCore",
-    "packOptions": {
-        "tags": [
-            "Entity Framework Core",
-            "entity-framework-core",
-            "EF",
-            "Data",
-            "O/RM",
-            "Queryable",
-            "Extensions",
-            "Linq",
-            "AsyncQueryable"
-        ]
+  "version": "1.1.0-alpha1-*",
+  "description":
+    "Abstractions for using Entity Framework Core IQueryable Extensions without the Entity Framework Core library.r\n\r\nCommon Namespaces:\r\nSystem.Linq\r\nMicrosoft.EntityFrameworkCore",
+  "packOptions": {
+    "tags": [
+      "Entity Framework Core",
+      "entity-framework-core",
+      "EF",
+      "Data",
+      "O/RM",
+      "Queryable",
+      "Extensions",
+      "Linq",
+      "AsyncQueryable"
+    ]
+  },
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "keyFile": "../../tools/Key.snk",
+    "xmlDoc": true,
+    "compile": {
+      "include": [
+        "../Shared/*.cs",
+        "../Microsoft.EntityFrameworkCore/Properties/CoreStrings.Designer.cs"
+      ]
     },
-    "buildOptions": {
-        "warningsAsErrors": true,
-        "keyFile": "../../tools/Key.snk",
-        "xmlDoc": true,
-        "compile": {
-            "include": [
-                "../Shared/*.cs"
-            ]
-        },
-        "embed": {
-            "includeFiles": [
-                "Properties/Microsoft.EntityFrameworkCore.Abstractions.rd.xml"
-            ]
-        }
-    },
-    "dependencies": {
-        "Microsoft.Extensions.Logging": "1.1.0-*",
-        "System.Interactive.Async": "3.0.0-*"
-    },
-    "frameworks": {
-        "net451": {
-            "frameworkAssemblies": {
-                "System.ComponentModel.DataAnnotations": "",
-                "System.Runtime": {
-                    "type": "build"
-                }
-            }
-        },
-        "netstandard1.3": {
-            "dependencies": {
-                "System.Collections.Concurrent": "4.0.12-*",
-                "System.ComponentModel.Annotations": "4.1.0-*",
-                "System.Linq.Queryable": "4.0.1-*",
-                "System.ObjectModel": "4.0.12-*",
-                "System.Reflection.Extensions": "4.0.1-*",
-                "System.Reflection.TypeExtensions": "4.1.0-*"
-            }
-        }
+    "embed": {
+      "includeFiles": [
+        "Properties/Microsoft.EntityFrameworkCore.Abstractions.rd.xml",
+        "../Microsoft.EntityFrameworkCore/Properties/CoreStrings.resx"
+      ]
     }
+  },
+  "dependencies": {
+    "Microsoft.Extensions.Logging": "1.1.0-*",
+    "System.Interactive.Async": "3.0.0-*"
+  },
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": "",
+        "System.Runtime": {
+          "type": "build"
+        }
+      }
+    },
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Collections.Concurrent": "4.0.12-*",
+        "System.ComponentModel.Annotations": "4.1.0-*",
+        "System.Linq.Queryable": "4.0.1-*",
+        "System.ObjectModel": "4.0.12-*",
+        "System.Reflection.Extensions": "4.0.1-*",
+        "System.Reflection.TypeExtensions": "4.1.0-*"
+      }
+    }
+  }
 }

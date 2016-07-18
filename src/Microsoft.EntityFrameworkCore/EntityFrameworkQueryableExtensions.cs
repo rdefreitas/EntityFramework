@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,7 +12,6 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Extensions.Internal;
 using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Utilities;
 
@@ -26,8 +24,6 @@ namespace Microsoft.EntityFrameworkCore
     public static class EntityFrameworkQueryableExtensions
     {
         #region Any/All
-
-        private static readonly MethodInfo _any = GetMethod(nameof(Queryable.Any));
 
         /// <summary>
         ///     Asynchronously determines whether a sequence contains any elements.
@@ -50,15 +46,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
         /// </returns>
         public static Task<bool> AnyAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, bool>(_any, source, cancellationToken);
+            return AsyncQueryableExtensions.AnyAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _anyPredicate = GetMethod(nameof(Queryable.Any), 1);
 
         /// <summary>
         ///     Asynchronously determines whether any element of a sequence satisfies a condition.
@@ -83,17 +75,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     predicate; otherwise, <c>false</c>.
         /// </returns>
         public static Task<bool> AnyAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, bool>(_anyPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.AnyAsync(source, predicate, cancellationToken);
         }
-
-        private static readonly MethodInfo _allPredicate = GetMethod(nameof(Queryable.All), 1);
 
         /// <summary>
         ///     Asynchronously determines whether all the elements of a sequence satisfy a condition.
@@ -118,21 +105,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     predicate; otherwise, <c>false</c>.
         /// </returns>
         public static Task<bool> AllAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, bool>(_allPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.AllAsync(source, predicate, cancellationToken);
         }
-
-        #endregion
-
-        #region Count/LongCount
-
-        private static readonly MethodInfo _count = GetMethod(nameof(Queryable.Count));
 
         /// <summary>
         ///     Asynchronously returns the number of elements in a sequence.
@@ -155,15 +133,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
         public static Task<int> CountAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            CancellationToken cancellationToken = default(CancellationToken))
+            [NotNull] IQueryable<TSource> source,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, int>(_count, source, cancellationToken);
+            return AsyncQueryableExtensions.CountAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _countPredicate = GetMethod(nameof(Queryable.Count), 1);
 
         /// <summary>
         ///     Asynchronously returns the number of elements in a sequence that satisfy a condition.
@@ -188,17 +162,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     function.
         /// </returns>
         public static Task<int> CountAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, int>(_countPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.CountAsync(source, predicate, cancellationToken);
         }
-
-        private static readonly MethodInfo _longCount = GetMethod(nameof(Queryable.LongCount));
 
         /// <summary>
         ///     Asynchronously returns an <see cref="Int64" /> that represents the total number of elements in a sequence.
@@ -221,15 +190,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
         public static Task<long> LongCountAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            CancellationToken cancellationToken = default(CancellationToken))
+            [NotNull] IQueryable<TSource> source,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, long>(_longCount, source, cancellationToken);
+            return AsyncQueryableExtensions.LongCountAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _longCountPredicate = GetMethod(nameof(Queryable.LongCount), 1);
 
         /// <summary>
         ///     Asynchronously returns an <see cref="Int64" /> that represents the number of elements in a sequence
@@ -255,21 +220,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     function.
         /// </returns>
         public static Task<long> LongCountAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, long>(_longCountPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.LongCountAsync(source, predicate, cancellationToken);
         }
-
-        #endregion
-
-        #region First/FirstOrDefault
-
-        private static readonly MethodInfo _first = GetMethod(nameof(Queryable.First));
 
         /// <summary>
         ///     Asynchronously returns the first element of a sequence.
@@ -292,15 +248,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the first element in <paramref name="source" />.
         /// </returns>
         public static Task<TSource> FirstAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IQueryable<TSource> source,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_first, source, cancellationToken);
+            return AsyncQueryableExtensions.FirstAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _firstPredicate = GetMethod(nameof(Queryable.First), 1);
 
         /// <summary>
         ///     Asynchronously returns the first element of a sequence that satisfies a specified condition.
@@ -325,17 +277,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="predicate" />.
         /// </returns>
         public static Task<TSource> FirstAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IQueryable<TSource> source,
+            Expression<Func<TSource, bool>> predicate,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_firstPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.FirstAsync(source, predicate, cancellationToken);
         }
-
-        private static readonly MethodInfo _firstOrDefault = GetMethod(nameof(Queryable.FirstOrDefault));
 
         /// <summary>
         ///     Asynchronously returns the first element of a sequence, or a default value if the sequence contains no elements.
@@ -359,15 +306,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="source" /> is empty; otherwise, the first element in <paramref name="source" />.
         /// </returns>
         public static Task<TSource> FirstOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IQueryable<TSource> source,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_firstOrDefault, source, cancellationToken);
+            return AsyncQueryableExtensions.FirstOrDefaultAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _firstOrDefaultPredicate = GetMethod(nameof(Queryable.FirstOrDefault), 1);
 
         /// <summary>
         ///     Asynchronously returns the first element of a sequence that satisfies a specified condition
@@ -394,21 +337,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     element in <paramref name="source" /> that passes the test specified by <paramref name="predicate" />.
         /// </returns>
         public static Task<TSource> FirstOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IQueryable<TSource> source,
+            Expression<Func<TSource, bool>> predicate,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_firstOrDefaultPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.FirstOrDefaultAsync(source, predicate, cancellationToken);
         }
-
-        #endregion
-
-        #region Last/LastOrDefault
-
-        private static readonly MethodInfo _last = GetMethod(nameof(Queryable.Last));
 
         /// <summary>
         ///     Asynchronously returns the last element of a sequence.
@@ -431,15 +365,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the last element in <paramref name="source" />.
         /// </returns>
         public static Task<TSource> LastAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
-            CancellationToken cancellationToken = default(CancellationToken))
+            [NotNull] IQueryable<TSource> source,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_last, source, cancellationToken);
+            return AsyncQueryableExtensions.LastAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _lastPredicate = GetMethod(nameof(Queryable.Last), 1);
 
         /// <summary>
         ///     Asynchronously returns the last element of a sequence that satisfies a specified condition.
@@ -464,17 +394,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="predicate" />.
         /// </returns>
         public static Task<TSource> LastAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_lastPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.LastAsync(source, predicate, cancellationToken);
         }
-
-        private static readonly MethodInfo _lastOrDefault = GetMethod(nameof(Queryable.LastOrDefault));
 
         /// <summary>
         ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
@@ -498,15 +423,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="source" /> is empty; otherwise, the last element in <paramref name="source" />.
         /// </returns>
         public static Task<TSource> LastOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_lastOrDefault, source, cancellationToken);
+            return AsyncQueryableExtensions.LastOrDefaultAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _lastOrDefaultPredicate = GetMethod(nameof(Queryable.LastOrDefault), 1);
 
         /// <summary>
         ///     Asynchronously returns the last element of a sequence that satisfies a specified condition
@@ -533,21 +454,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     element in <paramref name="source" /> that passes the test specified by <paramref name="predicate" />.
         /// </returns>
         public static Task<TSource> LastOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_lastOrDefaultPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.LastOrDefaultAsync(source, predicate, cancellationToken);
         }
-
-        #endregion
-
-        #region Single/SingleOrDefault
-
-        private static readonly MethodInfo _single = GetMethod(nameof(Queryable.Single));
 
         /// <summary>
         ///     Asynchronously returns the only element of a sequence, and throws an exception
@@ -571,15 +483,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the single element of the input sequence.
         /// </returns>
         public static Task<TSource> SingleAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_single, source, cancellationToken);
+            return AsyncQueryableExtensions.SingleAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _singlePredicate = GetMethod(nameof(Queryable.Single), 1);
 
         /// <summary>
         ///     Asynchronously returns the only element of a sequence that satisfies a specified condition,
@@ -605,17 +513,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="predicate" />.
         /// </returns>
         public static Task<TSource> SingleAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_singlePredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.SingleAsync(source, predicate, cancellationToken);
         }
-
-        private static readonly MethodInfo _singleOrDefault = GetMethod(nameof(Queryable.SingleOrDefault));
 
         /// <summary>
         ///     Asynchronously returns the only element of a sequence, or a default value if the sequence is empty;
@@ -641,15 +544,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     if the sequence contains no elements.
         /// </returns>
         public static Task<TSource> SingleOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_singleOrDefault, source, cancellationToken);
+            return AsyncQueryableExtensions.SingleOrDefaultAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _singleOrDefaultPredicate = GetMethod(nameof(Queryable.SingleOrDefault), 1);
 
         /// <summary>
         ///     Asynchronously returns the only element of a sequence that satisfies a specified condition or
@@ -676,21 +575,16 @@ namespace Microsoft.EntityFrameworkCore
         ///     <paramref name="predicate" />, or <c>default</c> ( <typeparamref name="TSource" /> ) if no such element is found.
         /// </returns>
         public static Task<TSource> SingleOrDefaultAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, bool>> predicate,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(predicate, nameof(predicate));
-
-            return ExecuteAsync<TSource, TSource>(_singleOrDefaultPredicate, source, predicate, cancellationToken);
+            return AsyncQueryableExtensions.SingleOrDefaultAsync(source, predicate, cancellationToken);
         }
 
         #endregion
 
         #region Min
-
-        private static readonly MethodInfo _min = GetMethod(nameof(Queryable.Min), predicate: mi => mi.IsGenericMethod);
 
         /// <summary>
         ///     Asynchronously returns the minimum value of a sequence.
@@ -713,15 +607,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the minimum value in the sequence.
         /// </returns>
         public static Task<TSource> MinAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_min, source, cancellationToken);
+            return AsyncQueryableExtensions.MinAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _minSelector = GetMethod(nameof(Queryable.Min), 1, mi => mi.IsGenericMethod);
 
         /// <summary>
         ///     Asynchronously invokes a projection function on each element of a sequence and returns the minimum resulting value.
@@ -748,21 +638,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the minimum value in the sequence.
         /// </returns>
         public static Task<TResult> MinAsync<TSource, TResult>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, TResult>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, TResult>(_minSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.MinAsync(source, selector, cancellationToken);
         }
-
-        #endregion
-
-        #region Max
-
-        private static readonly MethodInfo _max = GetMethod(nameof(Queryable.Max), predicate: mi => mi.IsGenericMethod);
 
         /// <summary>
         ///     Asynchronously returns the maximum value of a sequence.
@@ -785,15 +666,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the maximum value in the sequence.
         /// </returns>
         public static Task<TSource> MaxAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, TSource>(_max, source, cancellationToken);
+            return AsyncQueryableExtensions.MaxAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _maxSelector = GetMethod(nameof(Queryable.Max), 1, mi => mi.IsGenericMethod);
 
         /// <summary>
         ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
@@ -820,21 +697,16 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the maximum value in the sequence.
         /// </returns>
         public static Task<TResult> MaxAsync<TSource, TResult>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, TResult>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, TResult>(_maxSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.MaxAsync(source, selector, cancellationToken);
         }
 
         #endregion
 
         #region Sum
-
-        private static readonly MethodInfo _sumDecimal = GetMethod<decimal>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -854,15 +726,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<decimal> SumAsync(
-            [NotNull] this IQueryable<decimal> source,
+            [NotNull] IQueryable<decimal> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<decimal, decimal>(_sumDecimal, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableDecimal = GetMethod<decimal?>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -882,15 +750,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<decimal?> SumAsync(
-            [NotNull] this IQueryable<decimal?> source,
+            [NotNull] IQueryable<decimal?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<decimal?, decimal?>(_sumNullableDecimal, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumDecimalSelector = GetMethod<decimal>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -912,17 +776,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<decimal> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, decimal>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, decimal>(_sumDecimalSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableDecimalSelector = GetMethod<decimal?>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -944,17 +803,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<decimal?> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, decimal?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, decimal?>(_sumNullableDecimalSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumInt = GetMethod<int>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -974,15 +828,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<int> SumAsync(
-            [NotNull] this IQueryable<int> source,
+            [NotNull] IQueryable<int> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<int, int>(_sumInt, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableInt = GetMethod<int?>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1002,15 +852,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<int?> SumAsync(
-            [NotNull] this IQueryable<int?> source,
+            [NotNull] IQueryable<int?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<int?, int?>(_sumNullableInt, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumIntSelector = GetMethod<int>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1032,17 +878,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<int> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, int>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, int>(_sumIntSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableIntSelector = GetMethod<int?>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1064,17 +905,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<int?> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, int?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, int?>(_sumNullableIntSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumLong = GetMethod<long>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1094,15 +930,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<long> SumAsync(
-            [NotNull] this IQueryable<long> source,
+            [NotNull] IQueryable<long> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<long, long>(_sumLong, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableLong = GetMethod<long?>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1122,15 +954,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<long?> SumAsync(
-            [NotNull] this IQueryable<long?> source,
+            [NotNull] IQueryable<long?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<long?, long?>(_sumNullableLong, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumLongSelector = GetMethod<long>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1152,17 +980,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<long> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, long>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, long>(_sumLongSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableLongSelector = GetMethod<long?>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1184,17 +1007,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<long?> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, long?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, long?>(_sumNullableLongSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumDouble = GetMethod<double>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1214,15 +1032,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<double> SumAsync(
-            [NotNull] this IQueryable<double> source,
+            [NotNull] IQueryable<double> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<double, double>(_sumDouble, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableDouble = GetMethod<double?>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1242,15 +1056,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<double?> SumAsync(
-            [NotNull] this IQueryable<double?> source,
+            [NotNull] IQueryable<double?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<double?, double?>(_sumNullableDouble, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumDoubleSelector = GetMethod<double>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1272,17 +1082,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<double> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, double>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double>(_sumDoubleSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableDoubleSelector = GetMethod<double?>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1304,17 +1109,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<double?> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, double?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double?>(_sumNullableDoubleSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumFloat = GetMethod<float>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1334,15 +1134,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<float> SumAsync(
-            [NotNull] this IQueryable<float> source,
+            [NotNull] IQueryable<float> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<float, float>(_sumFloat, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableFloat = GetMethod<float?>(nameof(Queryable.Sum));
 
         /// <summary>
         ///     Asynchronously computes the sum of a sequence of values.
@@ -1362,15 +1158,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the values in the sequence.
         /// </returns>
         public static Task<float?> SumAsync(
-            [NotNull] this IQueryable<float?> source,
+            [NotNull] IQueryable<float?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<float?, float?>(_sumNullableFloat, source, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumFloatSelector = GetMethod<float>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1392,17 +1184,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<float> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, float>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, float>(_sumFloatSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _sumNullableFloatSelector = GetMethod<float?>(nameof(Queryable.Sum), 1);
 
         /// <summary>
         ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
@@ -1424,34 +1211,16 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the sum of the projected values..
         /// </returns>
         public static Task<float?> SumAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, float?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, float?>(_sumNullableFloatSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.SumAsync(source, selector, cancellationToken);
         }
 
         #endregion
 
         #region Average
-
-        private static MethodInfo GetAverageMethod<TOperand, TResult>(int parameterCount = 0)
-        {
-            return GetMethod<TResult>(
-                nameof(Queryable.Average),
-                parameterCount,
-                mi => ((parameterCount == 0)
-                       && (mi.GetParameters()[0].ParameterType == typeof(IQueryable<TOperand>)))
-                      || ((mi.GetParameters().Length == 2)
-                          && (mi.GetParameters()[1]
-                              .ParameterType.GenericTypeArguments[0]
-                              .GenericTypeArguments[1] == typeof(TOperand))));
-        }
-
-        private static readonly MethodInfo _averageDecimal = GetAverageMethod<decimal, decimal>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1471,15 +1240,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<decimal> AverageAsync(
-            [NotNull] this IQueryable<decimal> source,
+            [NotNull] IQueryable<decimal> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<decimal, decimal>(_averageDecimal, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableDecimal = GetAverageMethod<decimal?, decimal?>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1499,15 +1264,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<decimal?> AverageAsync(
-            [NotNull] this IQueryable<decimal?> source,
+            [NotNull] IQueryable<decimal?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<decimal?, decimal?>(_averageNullableDecimal, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageDecimalSelector = GetAverageMethod<decimal, decimal>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1530,17 +1291,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<decimal> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, decimal>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, decimal>(_averageDecimalSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableDecimalSelector = GetAverageMethod<decimal?, decimal?>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1563,17 +1319,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<decimal?> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, decimal?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, decimal?>(_averageNullableDecimalSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageInt = GetAverageMethod<int, double>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1593,15 +1344,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double> AverageAsync(
-            [NotNull] this IQueryable<int> source,
+            [NotNull] IQueryable<int> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<int, double>(_averageInt, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableInt = GetAverageMethod<int?, double?>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1621,15 +1368,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double?> AverageAsync(
-            [NotNull] this IQueryable<int?> source,
+            [NotNull] IQueryable<int?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<int?, double?>(_averageNullableInt, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageIntSelector = GetAverageMethod<int, double>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1652,17 +1395,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, int>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double>(_averageIntSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableIntSelector = GetAverageMethod<int?, double?>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1685,17 +1423,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double?> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, int?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double?>(_averageNullableIntSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageLong = GetAverageMethod<long, double>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1715,15 +1448,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double> AverageAsync(
-            [NotNull] this IQueryable<long> source,
+            [NotNull] IQueryable<long> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<long, double>(_averageLong, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableLong = GetAverageMethod<long?, double?>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1743,15 +1472,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double?> AverageAsync(
-            [NotNull] this IQueryable<long?> source,
+            [NotNull] IQueryable<long?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<long?, double?>(_averageNullableLong, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageLongSelector = GetAverageMethod<long, double>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1774,17 +1499,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, long>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double>(_averageLongSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableLongSelector = GetAverageMethod<long?, double?>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1807,17 +1527,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double?> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, long?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double?>(_averageNullableLongSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageDouble = GetAverageMethod<double, double>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1837,15 +1552,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double> AverageAsync(
-            [NotNull] this IQueryable<double> source,
+            [NotNull] IQueryable<double> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<double, double>(_averageDouble, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableDouble = GetAverageMethod<double?, double?>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1865,15 +1576,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<double?> AverageAsync(
-            [NotNull] this IQueryable<double?> source,
+            [NotNull] IQueryable<double?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<double?, double?>(_averageNullableDouble, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageDoubleSelector = GetAverageMethod<double, double>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1896,17 +1603,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, double>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double>(_averageDoubleSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableDoubleSelector = GetAverageMethod<double?, double?>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -1929,17 +1631,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<double?> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, double?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, double?>(_averageNullableDoubleSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageFloat = GetAverageMethod<float, float>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1959,15 +1656,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<float> AverageAsync(
-            [NotNull] this IQueryable<float> source,
+            [NotNull] IQueryable<float> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<float, float>(_averageFloat, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableFloat = GetAverageMethod<float?, float?>();
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values.
@@ -1987,15 +1680,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the sequence of values.
         /// </returns>
         public static Task<float?> AverageAsync(
-            [NotNull] this IQueryable<float?> source,
+            [NotNull] IQueryable<float?> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<float?, float?>(_averageNullableFloat, source, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageFloatSelector = GetAverageMethod<float, float>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -2018,17 +1707,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<float> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, float>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, float>(_averageFloatSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
-
-        private static readonly MethodInfo _averageNullableFloatSelector = GetAverageMethod<float?, float?>(1);
 
         /// <summary>
         ///     Asynchronously computes the average of a sequence of values that is obtained
@@ -2051,21 +1735,16 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains the average of the projected values.
         /// </returns>
         public static Task<float?> AverageAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Expression<Func<TSource, float?>> selector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(selector, nameof(selector));
-
-            return ExecuteAsync<TSource, float?>(_averageNullableFloatSelector, source, selector, cancellationToken);
+            return AsyncQueryableExtensions.AverageAsync(source, selector, cancellationToken);
         }
 
         #endregion
 
         #region Contains
-
-        private static readonly MethodInfo _contains = GetMethod(nameof(Queryable.Contains), 1);
 
         /// <summary>
         ///     Asynchronously determines whether a sequence contains a specified element by using the default equality comparer.
@@ -2089,22 +1768,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains <c>true</c> if the input sequence contains the specified value; otherwise, <c>false</c>.
         /// </returns>
         public static Task<bool> ContainsAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] TSource item,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return ExecuteAsync<TSource, bool>(
-                _contains,
-                source,
-                Expression.Constant(item, typeof(TSource)),
-                cancellationToken);
+            return AsyncQueryableExtensions.ContainsAsync(source, item, cancellationToken);
         }
-
-        #endregion
-
-        #region ToList/Array
 
         /// <summary>
         ///     Asynchronously creates a <see cref="List{T}" /> from an <see cref="IQueryable{T}" /> by enumerating it
@@ -2127,23 +1796,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     A task that represents the asynchronous operation.
         ///     The task result contains a <see cref="List{T}" /> that contains elements from the input sequence.
         /// </returns>
-        public static async Task<List<TSource>> ToListAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+        public static Task<List<TSource>> ToListAsync<TSource>(
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            var list = new List<TSource>();
-
-            using (var asyncEnumerator = source.AsAsyncEnumerable().GetEnumerator())
-            {
-                while (await asyncEnumerator.MoveNext(cancellationToken))
-                {
-                    list.Add(asyncEnumerator.Current);
-                }
-            }
-
-            return list;
+            return AsyncQueryableExtensions.ToListAsync(source, cancellationToken);
         }
 
         /// <summary>
@@ -2166,23 +1823,16 @@ namespace Microsoft.EntityFrameworkCore
         ///     A task that represents the asynchronous operation.
         ///     The task result contains an array that contains elements from the input sequence.
         /// </returns>
-        public static async Task<TSource[]> ToArrayAsync<TSource>(
-            [NotNull] this IQueryable<TSource> source,
+        public static Task<TSource[]> ToArrayAsync<TSource>(
+            [NotNull] IQueryable<TSource> source,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-
-            return (await source.ToListAsync(cancellationToken)).ToArray();
+            return AsyncQueryableExtensions.ToArrayAsync(source, cancellationToken);
         }
 
         #endregion
 
         #region Include
-
-        internal static readonly MethodInfo IncludeMethodInfo
-            = typeof(EntityFrameworkQueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Include))
-                .Single(mi => mi.GetParameters().Any(pi => pi.Name == "navigationPropertyPath"));
 
         /// <summary>
         ///     Specifies related entities to include in the query results. The navigation property to be included is specified starting with the
@@ -2225,33 +1875,13 @@ namespace Microsoft.EntityFrameworkCore
         ///     A new query with the related data included.
         /// </returns>
         public static IIncludableQueryable<TEntity, TProperty> Include<TEntity, TProperty>(
-            [NotNull] this IQueryable<TEntity> source,
+            [NotNull] IQueryable<TEntity> source,
             [NotNull] Expression<Func<TEntity, TProperty>> navigationPropertyPath)
             where TEntity : class
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(navigationPropertyPath, nameof(navigationPropertyPath));
-
-            return new IncludableQueryable<TEntity, TProperty>(
-                source.Provider is EntityQueryProvider
-                    ? source.Provider.CreateQuery<TEntity>(
-                        Expression.Call(
-                            null,
-                            IncludeMethodInfo.MakeGenericMethod(typeof(TEntity), typeof(TProperty)),
-                            new[] { source.Expression, Expression.Quote(navigationPropertyPath) }))
-                    : source);
+            return AsyncQueryableExtensions.Include(source, navigationPropertyPath);
         }
 
-        internal static readonly MethodInfo ThenIncludeAfterCollectionMethodInfo
-            = typeof(EntityFrameworkQueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(EntityFrameworkQueryableExtensions.ThenInclude))
-                .Single(mi => !mi.GetParameters()[0].ParameterType.GenericTypeArguments[1].IsGenericParameter);
-
-        internal static readonly MethodInfo ThenIncludeAfterReferenceMethodInfo
-            = typeof(EntityFrameworkQueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(EntityFrameworkQueryableExtensions.ThenInclude))
-                .Single(mi => mi.GetParameters()[0].ParameterType.GenericTypeArguments[1].IsGenericParameter);
-
         /// <summary>
         ///     Specifies additional related data to be further included based on a related type that was just included.
         /// </summary>
@@ -2289,86 +1919,53 @@ namespace Microsoft.EntityFrameworkCore
         ///     A new query with the related data included.
         /// </returns>
         public static IIncludableQueryable<TEntity, TProperty> ThenInclude<TEntity, TPreviousProperty, TProperty>(
-            [NotNull] this IIncludableQueryable<TEntity, IEnumerable<TPreviousProperty>> source,
-            [NotNull] Expression<Func<TPreviousProperty, TProperty>> navigationPropertyPath)
-            where TEntity : class
-            => new IncludableQueryable<TEntity, TProperty>(
-                source.Provider is EntityQueryProvider
-                    ? source.Provider.CreateQuery<TEntity>(
-                        Expression.Call(
-                            null,
-                            ThenIncludeAfterCollectionMethodInfo.MakeGenericMethod(typeof(TEntity), typeof(TPreviousProperty), typeof(TProperty)),
-                            new[] { source.Expression, Expression.Quote(navigationPropertyPath) }))
-                    : source);
-
-        /// <summary>
-        ///     Specifies additional related data to be further included based on a related type that was just included.
-        /// </summary>
-        /// <example>
-        ///     <para>
-        ///         The following query shows including a single level of related entities.
-        ///         <code>
-        ///             context.Blogs.Include(blog => blog.Posts);
-        ///         </code>
-        ///     </para>
-        ///     <para>
-        ///         The following query shows including two levels of entities on the same branch.
-        ///         <code>
-        ///             context.Blogs
-        ///                 .Include(blog => blog.Posts).ThenInclude(post => post.Tags);
-        ///         </code>
-        ///     </para>
-        ///     <para>
-        ///         The following query shows including multiple levels and branches of related data.
-        ///         <code>
-        ///             context.Blogs
-        ///                 .Include(blog => blog.Posts).ThenInclude(post => post.Tags).ThenInclude(tag => tag.TagInfo)
-        ///                 .Include(blog => blog.Contributors);
-        ///         </code>
-        ///     </para>
-        /// </example>
-        /// <typeparam name="TEntity"> The type of entity being queried. </typeparam>
-        /// <typeparam name="TPreviousProperty"> The type of the entity that was just included. </typeparam>
-        /// <typeparam name="TProperty"> The type of the related entity to be included. </typeparam>
-        /// <param name="source"> The source query. </param>
-        /// <param name="navigationPropertyPath">
-        ///     A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
-        /// </param>
-        /// <returns>
-        ///     A new query with the related data included.
-        /// </returns>
-        public static IIncludableQueryable<TEntity, TProperty> ThenInclude<TEntity, TPreviousProperty, TProperty>(
-            [NotNull] this IIncludableQueryable<TEntity, TPreviousProperty> source,
-            [NotNull] Expression<Func<TPreviousProperty, TProperty>> navigationPropertyPath)
-            where TEntity : class
-            => new IncludableQueryable<TEntity, TProperty>(
-                source.Provider is EntityQueryProvider
-                    ? source.Provider.CreateQuery<TEntity>(
-                        Expression.Call(
-                            null,
-                            ThenIncludeAfterReferenceMethodInfo.MakeGenericMethod(typeof(TEntity), typeof(TPreviousProperty), typeof(TProperty)),
-                            new[] { source.Expression, Expression.Quote(navigationPropertyPath) }))
-                    : source);
-
-        private class IncludableQueryable<TEntity, TProperty> : IIncludableQueryable<TEntity, TProperty>, IAsyncEnumerable<TEntity>
+            [NotNull] IIncludableQueryable<TEntity, IEnumerable<TPreviousProperty>> source,
+            [NotNull] Expression<Func<TPreviousProperty, TProperty>> navigationPropertyPath) where TEntity : class
         {
-            private readonly IQueryable<TEntity> _queryable;
+            return AsyncQueryableExtensions.ThenInclude(source, navigationPropertyPath);
+        }
 
-            public IncludableQueryable(IQueryable<TEntity> queryable)
-            {
-                _queryable = queryable;
-            }
-
-            public Expression Expression => _queryable.Expression;
-            public Type ElementType => _queryable.ElementType;
-            public IQueryProvider Provider => _queryable.Provider;
-
-            public IEnumerator<TEntity> GetEnumerator() => _queryable.GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-            IAsyncEnumerator<TEntity> IAsyncEnumerable<TEntity>.GetEnumerator()
-                => ((IAsyncEnumerable<TEntity>)_queryable).GetEnumerator();
+        /// <summary>
+        ///     Specifies additional related data to be further included based on a related type that was just included.
+        /// </summary>
+        /// <example>
+        ///     <para>
+        ///         The following query shows including a single level of related entities.
+        ///         <code>
+        ///             context.Blogs.Include(blog => blog.Posts);
+        ///         </code>
+        ///     </para>
+        ///     <para>
+        ///         The following query shows including two levels of entities on the same branch.
+        ///         <code>
+        ///             context.Blogs
+        ///                 .Include(blog => blog.Posts).ThenInclude(post => post.Tags);
+        ///         </code>
+        ///     </para>
+        ///     <para>
+        ///         The following query shows including multiple levels and branches of related data.
+        ///         <code>
+        ///             context.Blogs
+        ///                 .Include(blog => blog.Posts).ThenInclude(post => post.Tags).ThenInclude(tag => tag.TagInfo)
+        ///                 .Include(blog => blog.Contributors);
+        ///         </code>
+        ///     </para>
+        /// </example>
+        /// <typeparam name="TEntity"> The type of entity being queried. </typeparam>
+        /// <typeparam name="TPreviousProperty"> The type of the entity that was just included. </typeparam>
+        /// <typeparam name="TProperty"> The type of the related entity to be included. </typeparam>
+        /// <param name="source"> The source query. </param>
+        /// <param name="navigationPropertyPath">
+        ///     A lambda expression representing the navigation property to be included (<c>t => t.Property1</c>).
+        /// </param>
+        /// <returns>
+        ///     A new query with the related data included.
+        /// </returns>
+        public static IIncludableQueryable<TEntity, TProperty> ThenInclude<TEntity, TPreviousProperty, TProperty>(
+            [NotNull] IIncludableQueryable<TEntity, TPreviousProperty> source,
+            [NotNull] Expression<Func<TPreviousProperty, TProperty>> navigationPropertyPath) where TEntity : class
+        {
+            return AsyncQueryableExtensions.ThenInclude(source, navigationPropertyPath);
         }
 
         #endregion
@@ -2524,14 +2121,11 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains a <see cref="Dictionary{TKey, TSource}" /> that contains selected keys and values.
         /// </returns>
         public static Task<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Func<TSource, TKey> keySelector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(keySelector, nameof(keySelector));
-
-            return source.AsAsyncEnumerable().ToDictionary(keySelector, cancellationToken);
+            return AsyncQueryableExtensions.ToDictionaryAsync(source, keySelector, cancellationToken);
         }
 
         /// <summary>
@@ -2564,16 +2158,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     The task result contains a <see cref="Dictionary{TKey, TSource}" /> that contains selected keys and values.
         /// </returns>
         public static Task<Dictionary<TKey, TSource>> ToDictionaryAsync<TSource, TKey>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Func<TSource, TKey> keySelector,
             [NotNull] IEqualityComparer<TKey> comparer,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(keySelector, nameof(keySelector));
-            Check.NotNull(comparer, nameof(comparer));
-
-            return source.AsAsyncEnumerable().ToDictionary(keySelector, comparer, cancellationToken);
+            return AsyncQueryableExtensions.ToDictionaryAsync(source, keySelector, comparer, cancellationToken);
         }
 
         /// <summary>
@@ -2608,16 +2198,12 @@ namespace Microsoft.EntityFrameworkCore
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
         public static Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Func<TSource, TKey> keySelector,
             [NotNull] Func<TSource, TElement> elementSelector,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(keySelector, nameof(keySelector));
-            Check.NotNull(elementSelector, nameof(elementSelector));
-
-            return source.AsAsyncEnumerable().ToDictionary(keySelector, elementSelector, cancellationToken);
+            return AsyncQueryableExtensions.ToDictionaryAsync(source, keySelector, elementSelector, cancellationToken);
         }
 
         /// <summary>
@@ -2655,23 +2241,14 @@ namespace Microsoft.EntityFrameworkCore
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
         public static Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(
-            [NotNull] this IQueryable<TSource> source,
+            [NotNull] IQueryable<TSource> source,
             [NotNull] Func<TSource, TKey> keySelector,
             [NotNull] Func<TSource, TElement> elementSelector,
             [NotNull] IEqualityComparer<TKey> comparer,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(keySelector, nameof(keySelector));
-            Check.NotNull(elementSelector, nameof(elementSelector));
-            Check.NotNull(comparer, nameof(comparer));
-
-            return source.AsAsyncEnumerable().ToDictionary(keySelector, elementSelector, comparer, cancellationToken);
+            return AsyncQueryableExtensions.ToDictionaryAsync(source, keySelector, elementSelector, comparer, cancellationToken);
         }
-
-        #endregion
-
-        #region ForEach
 
         /// <summary>
         ///     Asynchronously enumerates the query results and performs the specified action on each element.
@@ -2692,20 +2269,37 @@ namespace Microsoft.EntityFrameworkCore
         /// </param>
         /// <returns> A task that represents the asynchronous operation. </returns>
         public static async Task ForEachAsync<T>(
-            [NotNull] this IQueryable<T> source,
+            [NotNull] IQueryable<T> source,
             [NotNull] Action<T> action,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            Check.NotNull(source, nameof(source));
-            Check.NotNull(action, nameof(action));
+            return AsyncQueryableExtensions.ForEachAsync(source, action, cancellationToken);
+        }
 
-            using (var asyncEnumerator = source.AsAsyncEnumerable().GetEnumerator())
-            {
-                while (await asyncEnumerator.MoveNext(cancellationToken))
-                {
-                    action(asyncEnumerator.Current);
-                }
-            }
+        /// <summary>
+        ///     Asynchronously enumerates the query results and performs the specified asynchronous action on each element.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <typeparam name="T">
+        ///     The type of the elements of <paramref name="source" />.
+        /// </typeparam>
+        /// <param name="source">
+        ///     An <see cref="IQueryable{T}" /> to enumerate.
+        /// </param>
+        /// <param name="action"> The asynchronous action to perform on each element. </param>
+        /// <param name="cancellationToken">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns> A task that represents the asynchronous operation. </returns>
+        public static Task ForEachAsync<T>(
+            [NotNull] IQueryable<T> source,
+            [NotNull] Func<T, Task> action,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return AsyncQueryableExtensions.ForEachAsync(source, action, cancellationToken);
         }
 
         #endregion

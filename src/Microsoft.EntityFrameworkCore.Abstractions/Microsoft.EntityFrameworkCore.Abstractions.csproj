@@ -41,40 +41,29 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.tt</DependentUpon>
     </Compile>
+    <Compile Include="..\Microsoft.EntityFrameworkCore\Properties\CoreStrings.Designer.cs">
+      <Link>Properties\CoreStrings.Designer.cs</Link>
+      <DependentUpon>CoreStrings.resx</DependentUpon>
+    </Compile>
     <Compile Include="..\Shared\Check.cs">
       <Link>Check.cs</Link>
     </Compile>
     <Compile Include="..\Shared\CodeAnnotations.cs">
       <Link>CodeAnnotations.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\LoggingExtensions.cs">
-      <Link>LoggingExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\PropertyInfoExtensions.cs">
-      <Link>PropertyInfoExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\SharedTypeExtensions.cs">
-      <Link>SharedTypeExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\StringBuilderExtensions.cs">
-      <Link>StringBuilderExtensions.cs</Link>
-    </Compile>
     <Compile Include="Extensions\Internal\QueryableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\CoreStrings.Designer.cs">
-      <DependentUpon>CoreStrings.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\InternalsVisibleTo.cs" />
     <Compile Include="Query\Internal\IAsyncEnumerableAccessor.cs" />
     <Compile Include="Query\Internal\IAsyncQueryProvider.cs" />
     <Compile Include="Query\Internal\IEntityQueryProvider.cs" />
     <Compile Include="System.Linq\AsyncQueryableExtensions.cs" />
     <Compile Include="System.Linq\IIncludableQueryable.cs" />
-  </ItemGroup>
+  </ItemGroup>  
   <ItemGroup>
-    <EmbeddedResource Include="Properties\CoreStrings.resx">
+    <EmbeddedResource Include="..\Microsoft.EntityFrameworkCore\Properties\CoreStrings.resx">
       <SubType>Designer</SubType>
-      <CustomToolNamespace>Microsoft.EntityFrameworkCore.Internal</CustomToolNamespace>
+      <Link>Properties\CoreStrings.resx</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +71,6 @@
       <Link>Properties\Resources.tt</Link>
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Resources.cs</LastGenOutput>
-      <CustomToolNamespace>Microsoft.EntityFrameworkCore.Internal</CustomToolNamespace>
     </Content>
     <Content Include="Properties\Microsoft.EntityFrameworkCore.Abstractions.rd.xml" />
   </ItemGroup>

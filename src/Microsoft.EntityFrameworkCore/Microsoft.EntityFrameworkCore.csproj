@@ -7,29 +7,33 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{715C38E9-B2F5-4DB2-8025-0C6492DEBDD4}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <DefineConstants>PUBLICRESOURCES</DefineConstants>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
     <AssemblyName>Microsoft.EntityFrameworkCore</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;PUBLICRESOURCES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;PUBLICRESOURCES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -41,7 +45,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.tt</DependentUpon>
     </Compile>
-    <!--<Compile Include="..\Shared\Check.cs">
+    <Compile Include="..\Shared\Check.cs">
       <Link>Check.cs</Link>
     </Compile>
     <Compile Include="..\Shared\CodeAnnotations.cs">
@@ -58,7 +62,7 @@
     </Compile>
     <Compile Include="..\Shared\StringBuilderExtensions.cs">
       <Link>StringBuilderExtensions.cs</Link>
-    </Compile>-->
+    </Compile>
     <Compile Include="ChangeTracking\ChangeTracker.cs" />
     <Compile Include="ChangeTracking\EntityEntry.cs" />
     <Compile Include="ChangeTracking\EntityEntryGraphNode.cs" />
@@ -370,6 +374,9 @@
     <Compile Include="Metadata\ValueGenerated.cs" />
     <Compile Include="ModelBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\CoreStrings.Designer.cs">
+      <DependentUpon>CoreStrings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\InternalsVisibleTo.cs" />
     <Compile Include="QueryTrackingBehavior.cs" />
     <Compile Include="Query\CompiledQueryCacheKeyGenerator.cs" />
@@ -504,11 +511,15 @@
     <Compile Include="ValueGeneration\ValueGenerator`.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\CoreStrings.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="..\..\tools\Resources.tt">
       <Link>Properties\Resources.tt</Link>
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Resources.cs</LastGenOutput>
-      <CustomToolNamespace>Microsoft.EntityFrameworkCore.Internal</CustomToolNamespace>
     </Content>
     <Content Include="Properties\Microsoft.EntityFrameworkCore.rd.xml" />
   </ItemGroup>
