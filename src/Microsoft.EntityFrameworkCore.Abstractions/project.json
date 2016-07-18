@@ -21,14 +21,12 @@
     "xmlDoc": true,
     "compile": {
       "include": [
-        "../Shared/*.cs",
-        "../Microsoft.EntityFrameworkCore/Properties/CoreStrings.Designer.cs"
+        "../Shared/*.cs"
       ]
     },
     "embed": {
-      "includeFiles": [
-        "Properties/Microsoft.EntityFrameworkCore.Abstractions.rd.xml",
-        "../Microsoft.EntityFrameworkCore/Properties/CoreStrings.resx"
+      "include": [
+        "Properties/Microsoft.EntityFrameworkCore.Abstractions.rd.xml"
       ]
     }
   },

@@ -14,9 +14,9 @@
     "warningsAsErrors": true,
     "keyFile": "../../tools/Key.snk",
     "xmlDoc": true,
-    "define": [ "PUBLICRESOURCES" ],
-    "nowarn": [ "CS0436" ],
-    "include": [ "../Shared/*.cs" ],
+    "compile": {
+      "excludeFiles": [ "Properties/CoreStrings.Designer.cs" ]
+    },
     "embed": {
       "includeFiles": "Properties/Microsoft.EntityFrameworkCore.rd.xml"
     }

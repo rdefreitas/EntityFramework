@@ -7,33 +7,29 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{715C38E9-B2F5-4DB2-8025-0C6492DEBDD4}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <DefineConstants>PUBLICRESOURCES</DefineConstants>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
     <AssemblyName>Microsoft.EntityFrameworkCore</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;PUBLICRESOURCES</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;PUBLICRESOURCES</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>CS0436;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -44,24 +40,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.tt</DependentUpon>
-    </Compile>
-    <Compile Include="..\Shared\Check.cs">
-      <Link>Check.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\CodeAnnotations.cs">
-      <Link>CodeAnnotations.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\LoggingExtensions.cs">
-      <Link>LoggingExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\PropertyInfoExtensions.cs">
-      <Link>PropertyInfoExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\SharedTypeExtensions.cs">
-      <Link>SharedTypeExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\StringBuilderExtensions.cs">
-      <Link>StringBuilderExtensions.cs</Link>
     </Compile>
     <Compile Include="ChangeTracking\ChangeTracker.cs" />
     <Compile Include="ChangeTracking\EntityEntry.cs" />
@@ -374,9 +352,6 @@
     <Compile Include="Metadata\ValueGenerated.cs" />
     <Compile Include="ModelBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\CoreStrings.Designer.cs">
-      <DependentUpon>CoreStrings.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\InternalsVisibleTo.cs" />
     <Compile Include="QueryTrackingBehavior.cs" />
     <Compile Include="Query\CompiledQueryCacheKeyGenerator.cs" />
@@ -509,11 +484,6 @@
     <Compile Include="ValueGeneration\ValueGeneratorFactory.cs" />
     <Compile Include="ValueGeneration\ValueGeneratorSelector.cs" />
     <Compile Include="ValueGeneration\ValueGenerator`.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\CoreStrings.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\tools\Resources.tt">
